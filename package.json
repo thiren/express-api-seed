@@ -1,0 +1,24 @@
+{
+  "name": "node-api-seed",
+  "version": "1.0.0",
+  "description": "A project seed for new node APIs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thiren/node-api-seed.git"
+  },
+  "private": true,
+  "keywords": [
+    "node",
+    "express"
+  ],
+  "author": "Thiren Bunsee <thirenbunsee@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thiren/node-api-seed/issues"
+  },
+  "homepage": "https://github.com/thiren/node-api-seed#readme"
+}
