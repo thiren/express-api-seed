@@ -1,2 +1,2 @@
-# node-template
-A project structure template for node apps
+# node-api-seed
+A project seed for new node APIs
