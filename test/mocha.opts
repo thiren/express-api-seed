@@ -1,2 +1,4 @@
+--timeout 259200000
+--recursive
 --reporter list
 --ui bdd
