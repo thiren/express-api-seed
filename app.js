@@ -1,16 +1,26 @@
 'use strict';
 
 var express = require('express');
-var logger = require('morgan');
+var morgan = require('morgan');
+var winston = require('winston');
 var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
+
+winston.add(winston.transports.File, {
+    level: 'info',
+    filename: __dirname + '/logs/logs.log',
+    timestamp: true
+});
+
+winston.log('info', 'Hello log files!');
+winston.info('Hello again log files!');
 
 var app = express();
 
 app.disable('x-powered-by');
 
-app.use(logger('combined'));
+app.use(morgan('combined', {immediate: true}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
