@@ -18,7 +18,10 @@ var cluster = require('cluster');
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-if (cluster.isMaster) {
+if (cluster.isMaster &&
+    (process.execArgv.indexOf('--debug') < 0) &&
+    (process.env.NODE_ENV !== 'development') &&
+    (process.execArgv.indexOf('--singleProcess') < 0)) {
     var numCPUs = require('os').cpus().length;
 
     // Fork workers.
