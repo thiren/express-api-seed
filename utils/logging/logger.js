@@ -6,6 +6,7 @@ require('winston-daily-rotate-file');
 var logger = new winston.Logger({
     transports: [
         new winston.transports.DailyRotateFile({
+            name: 'file',
             level: 'info',
             filename: './logs/file-logs',
             datePattern: '-yyyy-MM-ddTHH.log',
@@ -15,6 +16,7 @@ var logger = new winston.Logger({
             timestamp: true
         }),
         new winston.transports.Console({
+            name: 'console',
             level: 'debug',
             handleExceptions: true,
             json: false,
