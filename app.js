@@ -2,6 +2,7 @@
 
 var express = require('express');
 var morgan = require('morgan');
+var cors = require('cors');
 var bodyParser = require('body-parser');
 
 var logger = require('./utils/logging/logger');
@@ -18,6 +19,7 @@ if (app.get('env') === 'production') {
     app.use(morgan('dev', {stream: logger.stream}));
 }
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
@@ -35,6 +37,7 @@ if (app.get('env') === 'production') {
     // production error handler
     // no stacktraces leaked to user
     app.use(function (err, req, res, next) {
+        logger.error(err);
         res.status(err.status || 500);
         res.json({
             status: 'error',
@@ -46,6 +49,7 @@ if (app.get('env') === 'production') {
     // development error handler
     // will print stacktrace
     app.use(function (err, req, res, next) {
+        logger.error(err);
         res.status(err.status || 500);
         res.json({
             status: 'error',
