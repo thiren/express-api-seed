@@ -32,6 +32,7 @@
     "node": "~6"
   },
   "dependencies": {
+    "ajv": "4.1.7",
     "body-parser": "1.15.2",
     "cors": "2.7.1",
     "debug": "2.2.0",

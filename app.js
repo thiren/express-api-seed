@@ -6,6 +6,8 @@ var cors = require('cors');
 var bodyParser = require('body-parser');
 
 var logger = require('./utils/logging/logger');
+var requestSchemaIndex = require('./utils/request-validator/request-schema-index.json');
+require('./utils/request-validator/request-validator').init(requestSchemaIndex);
 
 var routes = require('./routes/index');
 
@@ -19,7 +21,7 @@ if (app.get('env') === 'production') {
     app.use(morgan('dev', {stream: logger.stream}));
 }
 
-app.use(cors());
+//app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
