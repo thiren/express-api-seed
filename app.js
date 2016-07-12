@@ -21,7 +21,7 @@ if (app.get('env') === 'production') {
     app.use(morgan('dev', {stream: logger.stream}));
 }
 
-//app.use(cors());
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
