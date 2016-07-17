@@ -6,21 +6,27 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('node-api-seed:server');
-var http = require('http');
-var cluster = require('cluster');
+const app = require('../app');
+const debug = require('debug')('node-api-seed:server');
+const http = require('http');
+const cluster = require('cluster');
+// Disable cluster RR balancing; direct socket sharing has better throughput /
+// lower overhead. Also bump up somaxconn with this command:
+// sudo sysctl -w net.core.somaxconn=4096
+cluster.schedulingPolicy = cluster.SCHED_NONE;
+
+const environment = process.env.NODE_ENV ? process.env.NODE_ENV : 'development';
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 if (cluster.isMaster &&
     (process.execArgv.indexOf('--debug') < 0) &&
-    (process.env.NODE_ENV !== 'development') &&
+    (environment !== 'development') &&
     (process.execArgv.indexOf('--singleProcess') < 0)) {
     var numCPUs = require('os').cpus().length;
 

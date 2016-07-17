@@ -1,7 +1,7 @@
 'use strict';
 
-var Ajv = require('ajv');
-var ajv = new Ajv();
+const Ajv = require('ajv');
+let ajv = new Ajv();
 
 module.exports = {
     init: init,
@@ -9,10 +9,10 @@ module.exports = {
     validate: validate
 };
 
-function init(schemaIndex) {
-    for (var key in schemaIndex) {
-        if (schemaIndex.hasOwnProperty(key)) {
-            ajv.addSchema(require(schemaIndex[key]), key);
+function init(schemaList) {
+    for (var key in schemaList) {
+        if (schemaList.hasOwnProperty(key)) {
+            addSchema(require(schemaList[key]), key);
         }
     }
 }
