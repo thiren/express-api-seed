@@ -1,9 +1,9 @@
 'use strict';
 
-var winston = require('winston');
+let winston = require('winston');
 require('winston-daily-rotate-file');
 
-var logger = new winston.Logger({
+let logger = new winston.Logger({
     transports: [
         new winston.transports.DailyRotateFile({
             name: 'file',

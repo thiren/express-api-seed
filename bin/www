@@ -7,6 +7,7 @@
  */
 
 const app = require('../app');
+var io = require('../sockets/io');
 const debug = require('debug')('node-api-seed:server');
 const http = require('http');
 const cluster = require('cluster');
@@ -28,16 +29,17 @@ if (cluster.isMaster &&
     (process.execArgv.indexOf('--debug') < 0) &&
     (environment !== 'development') &&
     (process.execArgv.indexOf('--singleProcess') < 0)) {
-    var numCPUs = require('os').cpus().length;
+    let numCPUs = require('os').cpus().length;
 
     // Fork workers.
-    for (var i = 0; i < numCPUs; i++) {
+    for (let i = 0; i < numCPUs; i++) {
         cluster.fork();
     }
 
     // If a worker dies, log it to the console and start another worker.
     cluster.on('exit', function (worker, code, signal) {
         console.log('Worker ' + worker.process.pid + ' died');
+        io.close();
         cluster.fork();
     });
 
@@ -52,6 +54,12 @@ if (cluster.isMaster &&
      */
 
     var server = http.createServer(app);
+
+    /**
+     * Create socket.io server.
+     */
+
+    io.createServer(server);
 
     /**
      * Listen on provided port, on all network interfaces.
@@ -69,7 +77,7 @@ if (cluster.isMaster &&
  */
 
 function normalizePort(val) {
-    var port = parseInt(val, 10);
+    let port = parseInt(val, 10);
 
     if (isNaN(port)) {
         // named pipe
@@ -123,3 +131,22 @@ function onListening() {
         : 'port ' + addr.port;
     debug('Listening on ' + bind);
 }
+
+
+// do app specific cleaning before exiting
+process.on('exit', function () {
+    
+});
+
+// catch ctrl+c event and exit normally
+process.on('SIGINT', function () {
+    console.log('Ctrl-C...');
+    process.exit(2);
+});
+
+//catch uncaught exceptions, trace, then exit normally
+process.on('uncaughtException', function(e) {
+    console.log('Uncaught Exception...');
+    console.log(e.stack);
+    process.exit(99);
+});
