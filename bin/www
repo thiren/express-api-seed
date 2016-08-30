@@ -9,13 +9,8 @@
 const app = require('../app');
 const debug = require('debug')('node-api-seed:server');
 const http = require('http');
-const cluster = require('cluster');
-// Disable cluster RR balancing; direct socket sharing has better throughput /
-// lower overhead. Also bump up somaxconn with this command:
-// sudo sysctl -w net.core.somaxconn=4096
-cluster.schedulingPolicy = cluster.SCHED_NONE;
 
-const environment = process.env.NODE_ENV ? process.env.NODE_ENV : 'development';
+const logger = require('../utils/logging/logger');
 
 /**
  * Get port from environment and store in Express.
@@ -24,52 +19,45 @@ const environment = process.env.NODE_ENV ? process.env.NODE_ENV : 'development';
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-if (cluster.isMaster &&
-    (process.execArgv.indexOf('--debug') < 0) &&
-    (environment !== 'development') &&
-    (process.execArgv.indexOf('--singleProcess') < 0)) {
-    var numCPUs = require('os').cpus().length;
+/**
+ * Create HTTP server.
+ */
 
-    // Fork workers.
-    for (var i = 0; i < numCPUs; i++) {
-        cluster.fork();
-    }
+const server = http.createServer(app);
 
-    // If a worker dies, log it to the console and start another worker.
-    cluster.on('exit', function (worker, code, signal) {
-        console.log('Worker ' + worker.process.pid + ' died');
-        cluster.fork();
-    });
+/**
+ * Listen on provided port, on all network interfaces.
+ */
 
-    // Log when a worker starts listening
-    cluster.on('listening', function (worker, address) {
-        console.log('Worker started with PID ' + worker.process.pid);
-    });
-} else {
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
 
-    /**
-     * Create HTTP server.
-     */
+/**
+ * Listen for process exceptions and exit events.
+ */
 
-    var server = http.createServer(app);
+process.on('uncaughtException', function (err) {
+    logger.error({message: 'Unhandled exception', error: err});
+});
 
-    /**
-     * Listen on provided port, on all network interfaces.
-     */
+process.on('SIGINT', function () {
+    logger.warn('Received SIGINT. Process is busy exiting');
+    setTimeout(function () {
+        process.exit(0);
+    }, 2000);
+});
 
-    server.listen(port);
-    server.on('error', onError);
-    server.on('listening', onListening);
-
-    // [END server]
-}
+process.on('exit', function (code) {
+    logger.warn('Process is exiting with code: ' + code);
+});
 
 /**
  * Normalize a port into a number, string, or false.
  */
 
 function normalizePort(val) {
-    var port = parseInt(val, 10);
+    const port = parseInt(val, 10);
 
     if (isNaN(port)) {
         // named pipe
@@ -93,18 +81,18 @@ function onError(error) {
         throw error;
     }
 
-    var bind = typeof port === 'string'
+    const bind = typeof port === 'string'
         ? 'Pipe ' + port
         : 'Port ' + port;
 
     // handle specific listen errors with friendly messages
     switch (error.code) {
         case 'EACCES':
-            console.error(bind + ' requires elevated privileges');
+            logger.error(bind + ' requires elevated privileges');
             process.exit(1);
             break;
         case 'EADDRINUSE':
-            console.error(bind + ' is already in use');
+            logger.error(bind + ' is already in use');
             process.exit(1);
             break;
         default:
@@ -117,9 +105,12 @@ function onError(error) {
  */
 
 function onListening() {
-    var addr = server.address();
-    var bind = typeof addr === 'string'
+    require('../utils/scheduling/scheduler');
+
+    const addr = server.address();
+    const bind = typeof addr === 'string'
         ? 'pipe ' + addr
         : 'port ' + addr.port;
     debug('Listening on ' + bind);
+    logger.warn('Listening on ' + bind);
 }
