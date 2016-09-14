@@ -1,21 +1,21 @@
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
-var async = require('async');
-var moment = require('moment');
-var CronJob = require('cron').CronJob;
-var appRootPath = require('app-root-path');
+const fs = require('fs');
+const path = require('path');
+const async = require('async');
+const moment = require('moment');
+const CronJob = require('cron').CronJob;
+const appRootPath = require('app-root-path');
 
-var logger = require('./logger');
-var cronTimers = require('../scheduling/cron-timers.js');
+const logger = require('./logger');
+const cronTimers = require('../scheduling/cron-timers.js');
 
 module.exports = scheduledJob;
 
 function scheduledJob() {
     logger.info('Starting log file remover job');
     var startTheJobAutomatically = true; //if false, remember to call job.start(), assuming job is the variable you set the cron job to.
-    new CronJob(cronTimers.everyHour, onTick, onComplete, startTheJobAutomatically, 'Africa/Johannesburg');
+    new CronJob(cronTimers.everySecond, onTick, onComplete, startTheJobAutomatically, 'Africa/Johannesburg');
 }
 
 function onTick(jobDone) {
@@ -34,6 +34,10 @@ function onTick(jobDone) {
         if (file === '.gitignore') {
             return done();
         }
+        if (path.extname(file) !== '.log') {
+            return done();
+        }
+
         var filePath = path.join(logFilesPath, file);
 
         fs.stat(filePath, function (err, stats) {
@@ -51,6 +55,8 @@ function onTick(jobDone) {
             fs.unlink(filePath, function (err) {
                 if (err) {
                     logger.error({message: 'Error deleting old log file', error: err});
+                } else {
+                    logger.info({message: 'Successfully deleted log file', file: file});
                 }
                 done();
             });

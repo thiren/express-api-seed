@@ -35,6 +35,8 @@ function parse(err) {
         error = Boom.create(statusCode, message, data);
     }
 
+    // todo: Added more information to the error object. (eg. url)
+
     return {
         statusCode: error.output.payload.statusCode,
         error: error.output.payload.error,

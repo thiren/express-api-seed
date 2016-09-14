@@ -4,16 +4,14 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const Boom = require('boom');
 
 const logger = require('./utils/logging/logger');
-const requestSchemaIndex = require('./utils/request-validator/request-schema-index.json');
-require('./utils/request-validator/request-validator').init(requestSchemaIndex);
+const errorHandler = require('./utils/error-handling/error-handler');
 
-let error = require('./utils/error');
+const routes = require('./routes/index');
 
-let routes = require('./routes/index');
-
-let app = express();
+const app = express();
 
 app.disable('x-powered-by');
 
@@ -31,35 +29,21 @@ app.use('/', routes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-    let err = error.create(404, 'Not Found');
-    next(err);
+    var data = {
+        url: req.originalUrl,
+    };
+    next(Boom.create(404, 'Route not found', data));
 });
 
 // error handlers
 if (app.get('env') === 'development') {
     // development error handler
     // will print stacktrace
-    app.use(function (err, req, res, next) {
-        logger.error(err);
-        res.status(err.statusCode || 500);
-        res.json({
-            status: 'error',
-            message: err.message,
-            error: err
-        });
-    });
-} else {
-    // production error handler
-    // no stacktraces leaked to user
-    app.use(function (err, req, res, next) {
-        logger.error(err);
-        res.status(err.statusCode || 500);
-        res.json({
-            status: 'error',
-            message: err.message,
-            error: {}
-        });
-    });
+    app.use(errorHandler.development);
 }
+
+// production error handler
+// no stacktraces leaked to user
+app.use(errorHandler.production);
 
 module.exports = app;
