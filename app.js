@@ -1,22 +1,24 @@
 'use strict';
 
-var express = require('express');
-var morgan = require('morgan');
-var cors = require('cors');
-var bodyParser = require('body-parser');
+const express = require('express');
+const morgan = require('morgan');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const Boom = require('boom');
 
-var logger = require('./utils/logging/logger');
+const logger = require('./utils/logging/logger');
+const errorHandler = require('./utils/error-handling/error-handler');
 
-var routes = require('./routes/index');
+const routes = require('./routes/index');
 
-var app = express();
+const app = express();
 
 app.disable('x-powered-by');
 
-if (app.get('env') === 'production') {
-    app.use(morgan('combined', {stream: logger.stream}));
-} else {
+if (app.get('env') === 'development') {
     app.use(morgan('dev', {stream: logger.stream}));
+} else {
+    app.use(morgan('combined', {stream: logger.stream}));
 }
 
 app.use(cors());
@@ -27,36 +29,21 @@ app.use('/', routes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+    var data = {
+        url: req.originalUrl,
+    };
+    next(Boom.create(404, 'Route not found', data));
 });
 
 // error handlers
-if (app.get('env') === 'production') {
-    // production error handler
-    // no stacktraces leaked to user
-    app.use(function (err, req, res, next) {
-        logger.error(err);
-        res.status(err.status || 500);
-        res.json({
-            status: 'error',
-            message: err.message,
-            error: {}
-        });
-    });
-} else {
+if (app.get('env') === 'development') {
     // development error handler
     // will print stacktrace
-    app.use(function (err, req, res, next) {
-        logger.error(err);
-        res.status(err.status || 500);
-        res.json({
-            status: 'error',
-            message: err.message,
-            error: err
-        });
-    });
+    app.use(errorHandler.development);
 }
+
+// production error handler
+// no stacktraces leaked to user
+app.use(errorHandler.production);
 
 module.exports = app;

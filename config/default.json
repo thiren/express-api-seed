@@ -1,0 +1,16 @@
+{
+  "logging": {
+    "level": "info",
+    "loggly": {
+      "inputToken": "",
+      "subdomain": "",
+      "auth": {
+        "username": "",
+        "password": ""
+      },
+      "tags": [
+        "node-api-seed"
+      ]
+    }
+  }
+}
