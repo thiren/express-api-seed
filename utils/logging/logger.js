@@ -1,16 +1,16 @@
 'use strict';
 
-var _ = require('lodash');
-var config = require('config');
-var winston = require('winston');
+const _ = require('lodash');
+const config = require('config');
+const winston = require('winston');
 require('winston-daily-rotate-file');
 require('winston-loggly');
 
-var environment = process.env.NODE_ENV || 'development';
+const environment = process.env.NODE_ENV || 'development';
 
-var defaultLoggingLevel = config.get('logging').level;
+const defaultLoggingLevel = config.get('logging').level;
 
-var winstonOptions = {
+const winstonOptions = {
     transports: [],
     exitOnError: false
 };
@@ -26,7 +26,7 @@ if (environment === 'production') {
     winstonOptions.transports.push(getFileTransport('info'));
 }
 
-var logger = new winston.Logger(winstonOptions);
+const logger = new winston.Logger(winstonOptions);
 
 logger.stream = {
     write: function (message, encoding) {
@@ -41,7 +41,7 @@ function getConsoleTransport(level) {
         level = defaultLoggingLevel;
     }
 
-    var options = {
+    let options = {
         name: 'console',
         level: level,
         handleExceptions: true,
@@ -58,7 +58,7 @@ function getFileTransport(level) {
         level = defaultLoggingLevel;
     }
 
-    var options = {
+    let options = {
         name: 'file',
         level: level,
         filename: './logs/winston-file-logs',
@@ -77,9 +77,9 @@ function getLogglyTransport(level) {
         level = defaultLoggingLevel;
     }
 
-    var logglyConfig = _.cloneDeep(config.get('logging').loggly);
+    let logglyConfig = _.cloneDeep(config.get('logging').loggly);
 
-    var options = _.merge({}, { level: level, json: true}, logglyConfig);
+    let options = _.merge({}, { level: level, json: true}, logglyConfig);
 
     return new winston.transports.Loggly(options);
 }

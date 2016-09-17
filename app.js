@@ -1,5 +1,3 @@
-'use strict';
-
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
@@ -16,9 +14,11 @@ const app = express();
 app.disable('x-powered-by');
 
 if (app.get('env') === 'development') {
+    app.use(morgan(':method :url', {stream: logger.stream, immediate: true}));
     app.use(morgan('dev', {stream: logger.stream}));
 } else {
-    app.use(morgan('combined', {stream: logger.stream}));
+    app.use(morgan(':remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" ":referrer" ":user-agent"', {stream: logger.stream, immediate: true}));
+    app.use(morgan(':remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', {stream: logger.stream}));
 }
 
 app.use(cors());
@@ -29,7 +29,7 @@ app.use('/', routes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-    var data = {
+    let data = {
         url: req.originalUrl,
     };
     next(Boom.create(404, 'Route not found', data));
