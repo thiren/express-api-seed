@@ -1,8 +1,6 @@
-'use strict';
-
-var expect = require('chai').expect;
-var request = require('supertest');
-var app = require('../../app');
+const expect = require('chai').expect;
+const request = require('supertest');
+const app = require('../../app');
 
 describe('Base route', function () {
     it('should return a 200 response', function (done) {
