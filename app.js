@@ -1,10 +1,9 @@
 const express = require('express');
-const morgan = require('morgan');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const Boom = require('boom');
 
-const logger = require('./utils/logging/logger');
+const initialiseRequestLogging = require('./utils/logging/initialise-request-logging');
 const errorHandler = require('./utils/error-handling/error-handler');
 
 const routes = require('./routes/index');
@@ -13,18 +12,13 @@ const app = express();
 
 app.disable('x-powered-by');
 
-if (app.get('env') === 'development') {
-    app.use(morgan(':method :url', {stream: logger.stream, immediate: true}));
-    app.use(morgan('dev', {stream: logger.stream}));
-} else {
-    app.use(morgan(':remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" ":referrer" ":user-agent"', {stream: logger.stream, immediate: true}));
-    app.use(morgan(':remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', {stream: logger.stream}));
-}
+initialiseRequestLogging(app);
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
+// api routes
 app.use('/', routes);
 
 // catch 404 and forward to error handler

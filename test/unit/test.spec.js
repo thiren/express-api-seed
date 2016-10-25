@@ -1,7 +1,6 @@
-'use strict';
-var assert = require('chai').assert;
-var request = require('supertest');
-var app = require('../../app');
+const assert = require('chai').assert;
+const request = require('supertest');
+const app = require('../../app');
 
 
 describe('Array', function() {

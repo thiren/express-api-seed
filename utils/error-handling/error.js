@@ -1,5 +1,3 @@
-'use strict';
-
 const uuid = require('node-uuid');
 const Boom = require('boom');
 

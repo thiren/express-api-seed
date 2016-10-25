@@ -1,5 +1,3 @@
-'use strict';
-
 const fs = require('fs');
 const path = require('path');
 const async = require('async');
@@ -15,11 +13,11 @@ module.exports = scheduledJob;
 function scheduledJob() {
     logger.info('Starting log file remover job');
     var startTheJobAutomatically = true; //if false, remember to call job.start(), assuming job is the variable you set the cron job to.
-    new CronJob(cronTimers.everySecond, onTick, onComplete, startTheJobAutomatically, 'Africa/Johannesburg');
+    new CronJob(cronTimers.everyHour, onTick, onComplete, startTheJobAutomatically, 'Africa/Johannesburg');
 }
 
 function onTick(jobDone) {
-    var fileRemovalThreshold = moment.utc().subtract(14, 'days');
+    var fileRemovalThreshold = moment.utc().subtract(7, 'days');
     var logFilesPath = appRootPath.resolve('/logs');
 
     fs.readdir(logFilesPath, function (err, files) {
