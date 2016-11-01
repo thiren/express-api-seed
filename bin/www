@@ -47,11 +47,19 @@ process.on('uncaughtException', function (err) {
     }, 2000);
 });
 
+process.on('unhandledRejection', function (reason, p) {
+    logger.error('Unhandled Rejection at: Promise', p, 'reason:', reason);
+
+    setTimeout(function () {
+        process.exit(1);
+    }, 2000);
+});
+
 process.on('SIGINT', function () {
     logger.warn('Received SIGINT. Process is busy exiting');
 
     setTimeout(function () {
-        process.exit(0);
+        process.exit(1);
     }, 2000);
 });
 
