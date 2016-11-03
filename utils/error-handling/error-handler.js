@@ -13,7 +13,11 @@ module.exports = {
 function development(err, req, res, next) {
     var parsedError = error.parse(err);
 
-    logger.error(parsedError);
+    if (parsedError.statusCode >= 400 && parsedError.statusCode <= 499) {
+        logger.warn(parsedError);
+    } else if (parsedError.statusCode >= 500) {
+        logger.error(parsedError);
+    }
 
     res.status(parsedError.statusCode || 500);
     res.json(parsedError);
@@ -24,7 +28,11 @@ function development(err, req, res, next) {
 function production(err, req, res, next) {
     var parsedError = error.parse(err);
 
-    logger.error(parsedError);
+    if (parsedError.statusCode >= 400 && parsedError.statusCode <= 499) {
+        logger.warn(parsedError);
+    } else if (parsedError.statusCode >= 500) {
+        logger.error(parsedError);
+    }
 
     res.status(parsedError.statusCode || 500);
     res.json(_.omit(parsedError, ['data', 'stack']));
