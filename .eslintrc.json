@@ -4,9 +4,7 @@
   "parserOptions": {
     "ecmaVersion": 6,
     "sourceType": "script",
-    "ecmaFeatures": {
-      "jsx": true
-    }
+    "ecmaFeatures": {}
   },
   "env": {
     "node": true,
