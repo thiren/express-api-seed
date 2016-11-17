@@ -36,7 +36,7 @@ server.on('listening', onListening);
  */
 
 process.on('warning', function (warning) {
-    logger.warn({message: 'warning', warning: warning});
+    logger.warn({message: 'Warning', warning: warning});
 });
 
 process.on('uncaughtException', function (err) {
