@@ -1,3 +1,4 @@
+const moment = require('moment');
 const uuid = require('node-uuid');
 const Boom = require('boom');
 
@@ -7,11 +8,11 @@ module.exports = {
     parse: parse
 };
 
-function parse(err) {
-    var error = err;
-    var statusCode = 500;
-    var message = null;
-    var data = {};
+function parse(req, err) {
+    let error = err;
+    let statusCode = 500;
+    let message = null;
+    let data = {};
 
     // todo: 401 errors are handled differently from other errors, will need to cater for that specific case
 
@@ -29,7 +30,8 @@ function parse(err) {
             };
         }
     } else {
-        logger.error({message: 'The error passed to the error handler was not an instance of Error', error: error});
+        logger.warn({message: 'The error passed to the error handler was not an instance of Error', error: error});
+        data = error;
         error = Boom.create(statusCode, message, data);
     }
 
@@ -39,9 +41,15 @@ function parse(err) {
         statusCode: error.output.payload.statusCode,
         error: error.output.payload.error,
         message: error.output.payload.message,
-        timestamp: Date.now(),
+        timestamp: moment.utc().toISOString(),
         reference: uuid.v4(),
         data: data,
-        stack: error.stack
+        stack: error.stack,
+        request: {
+            method: req.method,
+            url: req.originalUrl,
+            query: req.query,
+            body: req.body
+        }
     };
 }
