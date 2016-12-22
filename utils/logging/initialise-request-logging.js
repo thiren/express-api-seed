@@ -24,12 +24,12 @@ function initialiseMorgan(app) {
             skip: _skipRoutes
         }));
     } else {
-        app.use(morgan(':remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" ":referrer" ":user-agent"', {
+        app.use(morgan(':reference :remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" ":referrer" ":user-agent"', {
             stream: logger.stream,
             immediate: true,
             skip: _skipRoutes
         }));
-        app.use(morgan(':remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', {
+        app.use(morgan(':reference :remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', {
             stream: logger.stream,
             skip: _skipRoutes
         }));

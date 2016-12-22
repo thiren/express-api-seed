@@ -33,17 +33,22 @@ function parse(req, err) {
         logger.warn({message: 'The error passed to the error handler was not an instance of Error', error: error});
         data = error;
         error = Boom.create(statusCode, message, data);
+        error.stack = null;
+
+        if (typeof err === 'object' && err.hasOwnProperty('stack')) {
+            error.stack = err.stack;
+        }
     }
 
     // todo: Added more information to the error object. (eg. url, user)
 
-    return {
+    const output = {
         statusCode: error.output.payload.statusCode,
         error: error.output.payload.error,
         message: error.output.payload.message,
         timestamp: moment.utc().toISOString(),
         data: data,
-        stack: error.stack,
+        stack: null,
         request: {
             reference: req.reference || uuid.v4(),
             method: req.method,
@@ -52,4 +57,10 @@ function parse(req, err) {
             body: req.body
         }
     };
+
+    if (error.output.payload.statusCode !== 404 && error.hasOwnProperty('stack')) {
+        output.stack = error.stack;
+    }
+
+    return output;
 }
