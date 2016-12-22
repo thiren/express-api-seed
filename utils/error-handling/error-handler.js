@@ -11,7 +11,7 @@ module.exports = {
 // development error handler
 // will return stacktrace
 function development(err, req, res, next) {
-    var parsedError = error.parse(err);
+    let parsedError = error.parse(req, err);
 
     if (parsedError.statusCode >= 400 && parsedError.statusCode <= 499) {
         logger.warn(parsedError);
@@ -26,7 +26,7 @@ function development(err, req, res, next) {
 // production error handler
 // no stacktraces leaked to user
 function production(err, req, res, next) {
-    var parsedError = error.parse(err);
+    let parsedError = error.parse(req, err);
 
     if (parsedError.statusCode >= 400 && parsedError.statusCode <= 499) {
         logger.warn(parsedError);

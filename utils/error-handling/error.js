@@ -1,4 +1,5 @@
-const uuid = require('node-uuid');
+const moment = require('moment');
+const uuid = require('uuid');
 const Boom = require('boom');
 
 const logger = require('../logging/logger');
@@ -7,11 +8,11 @@ module.exports = {
     parse: parse
 };
 
-function parse(err) {
-    var error = err;
-    var statusCode = 500;
-    var message = null;
-    var data = {};
+function parse(req, err) {
+    let error = err;
+    let statusCode = 500;
+    let message = null;
+    let data = {};
 
     // todo: 401 errors are handled differently from other errors, will need to cater for that specific case
 
@@ -29,19 +30,37 @@ function parse(err) {
             };
         }
     } else {
-        logger.error({message: 'The error passed to the error handler was not an instance of Error', error: error});
+        logger.warn({message: 'The error passed to the error handler was not an instance of Error', error: error});
+        data = error;
         error = Boom.create(statusCode, message, data);
+        error.stack = null;
+
+        if (typeof err === 'object' && err.hasOwnProperty('stack')) {
+            error.stack = err.stack;
+        }
     }
 
-    // todo: Added more information to the error object. (eg. url)
+    // todo: Added more information to the error object. (eg. url, user)
 
-    return {
+    const output = {
         statusCode: error.output.payload.statusCode,
         error: error.output.payload.error,
         message: error.output.payload.message,
-        timestamp: Date.now(),
-        reference: uuid.v4(),
+        timestamp: moment.utc().toISOString(),
         data: data,
-        stack: error.stack
+        stack: null,
+        request: {
+            reference: req.reference || uuid.v4(),
+            method: req.method,
+            url: req.originalUrl,
+            query: req.query,
+            body: req.body
+        }
     };
+
+    if (error.output.payload.statusCode !== 404 && error.hasOwnProperty('stack')) {
+        output.stack = error.stack;
+    }
+
+    return output;
 }

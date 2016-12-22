@@ -1,6 +1,8 @@
 const _ = require('lodash');
+const path = require('path');
 const config = require('config');
 const winston = require('winston');
+const appRoot = require('app-root-path');
 require('winston-daily-rotate-file');
 require('winston-loggly');
 
@@ -59,7 +61,7 @@ function getFileTransport(level) {
     let options = {
         name: 'file',
         level: level,
-        filename: './logs/winston-file-logs',
+        filename: path.join(appRoot.resolve('logs'), 'logs'),
         datePattern: '-yyyy-MM-ddTHH.log',
         handleExceptions: true,
         json: true,
