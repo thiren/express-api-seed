@@ -12,13 +12,13 @@ module.exports = scheduledJob;
 
 function scheduledJob() {
     logger.info('Starting log file remover job');
-    var startTheJobAutomatically = true; //if false, remember to call job.start(), assuming job is the variable you set the cron job to.
+    let startTheJobAutomatically = true; //if false, remember to call job.start(), assuming job is the variable you set the cron job to.
     new CronJob(cronTimers.everyHour, onTick, onComplete, startTheJobAutomatically, 'Africa/Johannesburg');
 }
 
 function onTick(jobDone) {
-    var fileRemovalThreshold = moment.utc().subtract(7, 'days');
-    var logFilesPath = appRootPath.resolve('/logs');
+    let fileRemovalThreshold = moment.utc().subtract(7, 'days');
+    let logFilesPath = appRootPath.resolve('/logs');
 
     fs.readdir(logFilesPath, function (err, files) {
         if (err) {
@@ -36,7 +36,7 @@ function onTick(jobDone) {
             return done();
         }
 
-        var filePath = path.join(logFilesPath, file);
+        let filePath = path.join(logFilesPath, file);
 
         fs.stat(filePath, function (err, stats) {
             if (err) {
@@ -44,7 +44,7 @@ function onTick(jobDone) {
                 return done();
             }
 
-            var fileCreatedDate = moment.utc(stats.birthtime);
+            let fileCreatedDate = moment.utc(stats.birthtime);
 
             if (fileCreatedDate.isAfter(fileRemovalThreshold)) {
                 return done();
