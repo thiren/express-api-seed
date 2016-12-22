@@ -1,5 +1,5 @@
 const moment = require('moment');
-const uuid = require('node-uuid');
+const uuid = require('uuid');
 const Boom = require('boom');
 
 const logger = require('../logging/logger');
@@ -35,17 +35,17 @@ function parse(req, err) {
         error = Boom.create(statusCode, message, data);
     }
 
-    // todo: Added more information to the error object. (eg. url)
+    // todo: Added more information to the error object. (eg. url, user)
 
     return {
         statusCode: error.output.payload.statusCode,
         error: error.output.payload.error,
         message: error.output.payload.message,
         timestamp: moment.utc().toISOString(),
-        reference: uuid.v4(),
         data: data,
         stack: error.stack,
         request: {
+            reference: req.reference || uuid.v4(),
             method: req.method,
             url: req.originalUrl,
             query: req.query,

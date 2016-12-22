@@ -1,3 +1,5 @@
+const _ = require('lodash');
+const uuid = require('uuid');
 const morgan = require('morgan');
 
 const logger = require('./logger');
@@ -5,6 +7,10 @@ const logger = require('./logger');
 module.exports = initialiseMorgan;
 
 function initialiseMorgan(app) {
+    app.use(function (req, res, next) {
+        req.reference = uuid.v4();
+        next();
+    });
     if (app.get('env') === 'test') {
         // Don't log requests when running tests
     } else if (app.get('env') === 'development') {
@@ -31,5 +37,5 @@ function initialiseMorgan(app) {
 }
 
 function _skipRoutes(req, res) {
-    return !!(req.originalUrl in ['/favicon.ico']);
+    return _.includes(['/favicon.ico'], req.originalUrl);
 }
