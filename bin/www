@@ -64,7 +64,7 @@ process.on('SIGINT', function () {
 });
 
 process.on('exit', function (code) {
-    logger.warn(`Process is exiting with code: ${code}`);
+    logger.warn('Process is exiting with code: ' + code);
 });
 
 /**
