@@ -1,4 +1,5 @@
 const assert = require('chai').assert;
+const error = require('../../../utils/error-handling/error');
 
 describe('Array', function() {
     describe('#indexOf()', function () {
