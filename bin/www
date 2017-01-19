@@ -4,11 +4,11 @@
  * Module dependencies.
  */
 
+const logger = require('../utils/logging/logger');
+
 const app = require('../app');
 const debug = require('debug')('node-api-seed:server');
 const http = require('http');
-
-const logger = require('../utils/logging/logger');
 
 /**
  * Get port from environment and store in Express.
