@@ -30,14 +30,20 @@ function parse(req, err) {
             };
         }
     } else {
-        if (typeof err === 'object' && _.has(err, 'statusCode') && _.has(err, 'message')) {
-            statusCode = err.statusCode;
+        if (typeof err === 'object' && (_.has(err, 'statusCode') || _.has(err, 'status')) && _.has(err, 'message')) {
+            statusCode = err.statusCode || err.status;
             message = err.message;
             if (_.has(err, 'data')) {
-                data = err.data;
+                if (typeof err.data === 'object') {
+                    data = err.data;
+                } else if (typeof err.data === 'string') {
+                    data = {
+                        message: err.data
+                    };
+                }
             }
         } else {
-            data = error;
+            data = err;
         }
 
         error = Boom.create(statusCode, message, data);

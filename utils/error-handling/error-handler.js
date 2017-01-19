@@ -35,5 +35,5 @@ function production(err, req, res, next) {
     }
 
     res.status(parsedError.statusCode || 500);
-    res.json(_.omit(parsedError, ['data', 'stack']));
+    res.json(_.omit(parsedError, ['data', 'stack', 'request']));
 }
