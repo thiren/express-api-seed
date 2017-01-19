@@ -7,9 +7,10 @@ module.exports = initialiseErrorHandling;
 function initialiseErrorHandling(app) {
     // catch 404 and forward to error handler
     app.use(function (req, res, next) {
-        let data = {
-            url: req.originalUrl,
+        req.error = {
+            includeStackTrace: false
         };
+        let data = {};
         next(Boom.create(404, 'Route not found', data));
     });
 
