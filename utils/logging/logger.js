@@ -15,7 +15,7 @@ const winstonOptions = {
     exitOnError: false
 };
 
-if (environment === 'production') {
+if (environment === 'production' || environment === 'qa') {
     winstonOptions.transports.push(getConsoleTransport('info'));
     winstonOptions.transports.push(getFileTransport('info'));
     winstonOptions.transports.push(getLogglyTransport('warn'));
