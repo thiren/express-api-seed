@@ -17,25 +17,25 @@ function initialiseMorgan(app) {
         app.use(morgan(':method :url', {
             stream: logger.stream,
             immediate: true,
-            skip: _skipRoutes
+            skip: skip
         }));
         app.use(morgan('dev', {
             stream: logger.stream,
-            skip: _skipRoutes
+            skip: skip
         }));
     } else {
         app.use(morgan(':reference :remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" ":referrer" ":user-agent"', {
             stream: logger.stream,
             immediate: true,
-            skip: _skipRoutes
+            skip: skip
         }));
         app.use(morgan(':reference :remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', {
             stream: logger.stream,
-            skip: _skipRoutes
+            skip: skip
         }));
     }
 }
 
-function _skipRoutes(req, res) {
+function skip(req, res) {
     return _.includes(['/favicon.ico'], req.originalUrl);
 }

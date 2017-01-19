@@ -1,6 +1,7 @@
 const moment = require('moment');
 const uuid = require('uuid');
 const Boom = require('boom');
+const _ = require('lodash');
 
 const logger = require('../logging/logger');
 
@@ -18,7 +19,6 @@ function parse(req, err) {
 
     if (error instanceof Error) {
         if (!error.isBoom) {
-            logger.warn({message: 'The error passed to the error handler was not a Boom error', error: error});
             error = Boom.wrap(error, statusCode, message);
         }
 
@@ -30,13 +30,22 @@ function parse(req, err) {
             };
         }
     } else {
-        logger.warn({message: 'The error passed to the error handler was not an instance of Error', error: error});
-        data = error;
-        error = Boom.create(statusCode, message, data);
-        error.stack = null;
+        if (typeof err === 'object' && _.has(err, 'statusCode') && _.has(err, 'message')) {
+            statusCode = err.statusCode;
+            message = err.message;
+            if (_.has(err, 'data')) {
+                data = err.data;
+            }
+        } else {
+            data = error;
+        }
 
-        if (typeof err === 'object' && err.hasOwnProperty('stack')) {
+        error = Boom.create(statusCode, message, data);
+
+        if (typeof err === 'object' && _.has(err, 'stack')) {
             error.stack = err.stack;
+        } else {
+            error.stack = null;
         }
     }
 
@@ -58,7 +67,7 @@ function parse(req, err) {
         }
     };
 
-    if (error.output.payload.statusCode !== 404 && error.hasOwnProperty('stack')) {
+    if (error.hasOwnProperty('stack') && (req.hasOwnProperty(error) && req.error.includeStack !== false)) {
         output.stack = error.stack;
     }
 
