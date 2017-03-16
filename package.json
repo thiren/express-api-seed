@@ -48,7 +48,6 @@
     "lodash": "4.17.4",
     "moment": "2.17.1",
     "morgan": "1.8.1",
-    "serve-static": "https://registry.npmjs.org/serve-static/-/serve-static-1.12.1.tgz",
     "uuid": "3.0.1",
     "winston": "2.3.1",
     "winston-daily-rotate-file": "1.4.6",
