@@ -1,3 +1,5 @@
+'use strict';
+
 const _ = require('lodash');
 const uuid = require('uuid');
 const morgan = require('morgan');
