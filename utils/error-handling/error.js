@@ -5,8 +5,6 @@ const uuid = require('uuid');
 const Boom = require('boom');
 const _ = require('lodash');
 
-const logger = require('../logging/logger');
-
 module.exports = {
     parse: parse
 };
@@ -75,8 +73,12 @@ function parse(req, err) {
         }
     };
 
-    if (error.hasOwnProperty('stack') && (req.hasOwnProperty(error) && req.error.includeStack !== false)) {
-        output.stack = error.stack;
+    if (error.hasOwnProperty('stack')) {
+        if (!req.hasOwnProperty(error)) {
+            output.stack = error.stack;
+        } else if (req.hasOwnProperty(error) && req.error.includeStack === true) {
+            output.stack = error.stack;
+        }
     }
 
     return output;
