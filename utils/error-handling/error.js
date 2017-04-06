@@ -74,9 +74,9 @@ function parse(req, err) {
     };
 
     if (error.hasOwnProperty('stack')) {
-        if (!req.hasOwnProperty(error)) {
+        if (!req.hasOwnProperty('error')) {
             output.stack = error.stack;
-        } else if (req.hasOwnProperty(error) && req.error.includeStack === true) {
+        } else if (req.hasOwnProperty('error') && req.error.includeStack === true) {
             output.stack = error.stack;
         }
     }
