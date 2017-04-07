@@ -6,7 +6,7 @@ const config = require('config');
 const winston = require('winston');
 const appRoot = require('app-root-path');
 require('winston-daily-rotate-file');
-require('winston-loggly');
+require('winston-loggly-bulk');
 
 const environment = process.env.NODE_ENV || 'development';
 
@@ -81,7 +81,13 @@ function getLogglyTransport(level) {
 
     let logglyConfig = _.cloneDeep(config.get('logging').loggly);
 
-    let options = _.merge({}, { level: level, json: true}, logglyConfig);
+    let options = _.merge({}, {
+        level: level,
+        isBulk: true,
+        json: true,
+        stripColors: true,
+        bufferOptions: {size: 1000, retriesInMilliSeconds: 60 * 1000}
+    }, logglyConfig);
 
     return new winston.transports.Loggly(options);
 }
