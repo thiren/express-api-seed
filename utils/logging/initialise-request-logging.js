@@ -8,6 +8,14 @@ const logger = require('./logger');
 
 module.exports = initialiseMorgan;
 
+morgan.token('reference', function (req) {
+    if (!req.reference) {
+        return '';
+    }
+
+    return req.reference;
+});
+
 function initialiseMorgan(app) {
     app.use(function (req, res, next) {
         req.reference = uuid.v4();
