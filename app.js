@@ -1,5 +1,3 @@
-'use strict';
-
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -24,14 +22,6 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public'), {
     maxAge: '7d'
 }));
-
-// never cache
-app.use(function (req, res, next) {
-    res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
-    res.set('Pragma', 'no-cache');
-    res.set('Expires', 0);
-    next();
-});
 
 // api routes
 app.use('/', routes);

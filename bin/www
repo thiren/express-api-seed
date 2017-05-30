@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-'use strict';
 
 /**
  * Module dependencies.
@@ -8,7 +7,6 @@
 const logger = require('../utils/logging/logger');
 
 const app = require('../app');
-const debug = require('debug')('node-api-seed:server');
 const http = require('http');
 
 /**
@@ -127,6 +125,5 @@ function onListening() {
     const bind = typeof addr === 'string'
         ? 'pipe ' + addr
         : 'port ' + addr.port;
-    debug('Listening on ' + bind);
     logger.info('Listening on ' + bind);
 }
