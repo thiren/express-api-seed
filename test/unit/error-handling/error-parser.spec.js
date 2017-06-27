@@ -1,11 +1,61 @@
-const assert = require('chai').assert;
+const Boom = require('boom');
+const expect = require('chai').expect;
 const error = require('../../../utils/error-handling/error');
 
-describe('Array', function() {
-    describe('#indexOf()', function () {
-        it('should return -1 when the value is not present', function () {
-            assert.equal(-1, [1,2,3].indexOf(5));
-            assert.equal(-1, [1,2,3].indexOf(0));
-        });
+describe('Error Parser', function() {
+    const req = {
+        reference: '123456-abcdef',
+        method: 'GET',
+        originalUrl: 'localhost',
+        query: {},
+        body: {}
+    };
+
+    it('should parse a native nodejs error into an error object', function(done) {
+        const nativeError = new Error('This is a test');
+        const parsedError = error.parse(req, nativeError);
+
+        expect(parsedError).to.be.an('object');
+        expect(parsedError).to.have.property('statusCode').that.is.a('number');
+        expect(parsedError).to.have.property('error').that.is.a('string');
+        expect(parsedError).to.have.property('message').that.is.a('string');
+        expect(parsedError).to.have.property('timestamp').that.is.a('string');
+        expect(parsedError).to.have.property('data');
+        expect(parsedError).to.have.property('stack');
+        expect(parsedError).to.have.property('request').that.is.an('object');
+        expect(parsedError).to.have.deep.property('request.reference').that.is.a('string');
+        expect(parsedError).to.have.deep.property('request.method').that.is.a('string');
+        expect(parsedError).to.have.deep.property('request.url').that.is.a('string');
+        expect(parsedError).to.have.deep.property('request.query').that.is.an('object');
+        expect(parsedError).to.have.deep.property('request.body').that.is.an('object');
+
+        done();
+    });
+
+    it('should parse a native nodejs error into an error object that has a status 500', function(done) {
+        //const error = new Error('This is a test');
+
+        done();
+    });
+
+    it('should parse a boom error into an error object', function(done) {
+        const boomError = Boom.wrap(err, statusCode, message);
+        const parsedError = error.parse(req, nativeError);
+
+        expect(parsedError).to.be.an('object');
+        expect(parsedError).to.have.property('statusCode').that.is.a('number');
+        expect(parsedError).to.have.property('error').that.is.a('string');
+        expect(parsedError).to.have.property('message').that.is.a('string');
+        expect(parsedError).to.have.property('timestamp').that.is.a('string');
+        expect(parsedError).to.have.property('data');
+        expect(parsedError).to.have.property('stack');
+        expect(parsedError).to.have.property('request').that.is.an('object');
+        expect(parsedError).to.have.deep.property('request.reference').that.is.a('string');
+        expect(parsedError).to.have.deep.property('request.method').that.is.a('string');
+        expect(parsedError).to.have.deep.property('request.url').that.is.a('string');
+        expect(parsedError).to.have.deep.property('request.query').that.is.an('object');
+        expect(parsedError).to.have.deep.property('request.body').that.is.an('object');
+
+        done();
     });
 });
