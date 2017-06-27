@@ -8,16 +8,28 @@ module.exports = {
 };
 
 function parse(req, err) {
-    let error;
+    let error = {};
     let statusCode = 500;
     let message = null;
     let data = {};
 
     // todo: 401 errors are handled differently from other errors, will need to cater for that specific case
+    // todo: add a "code" field onto the error object to differentiate errors with the same status
 
     if (err instanceof Error) {
         if (!err.isBoom) {
-            error = Boom.wrap(err, statusCode, message);
+            if (_.has(err, 'statusCode') || _.has(err, 'status')) {
+                statusCode = err.statusCode || err.status;
+            }
+            if (_.has(err, 'message') && typeof err.message === 'string') {
+                message = err.message;
+            }
+
+            if (statusCode === 401) {
+                error = Boom.unauthorized(message);
+            } else {
+                error = Boom.wrap(err, statusCode, message);
+            }
             error.stack = err.stack;
         } else {
             error = err;

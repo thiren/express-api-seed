@@ -1,6 +1,5 @@
 {
   "extends": "eslint:recommended",
-  "installedESLint": true,
   "parserOptions": {
     "ecmaVersion": 6,
     "sourceType": "script",
@@ -11,6 +10,7 @@
     "es6": true
   },
   "rules": {
+    "no-console": "warn",
     "no-unused-vars": ["warn", { "vars": "all", "args": "none" }]
   }
 }

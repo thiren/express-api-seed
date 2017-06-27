@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "app-root-path": "2.0.1",
-    "async": "2.4.1",
+    "async": "2.5.0",
     "body-parser": "1.17.2",
     "boom": "5.1.0",
     "config": "1.26.1",
@@ -47,14 +47,14 @@
     "lodash": "4.17.4",
     "moment": "2.18.1",
     "morgan": "1.8.2",
-    "uuid": "3.0.1",
+    "uuid": "3.1.0",
     "winston": "2.3.1",
     "winston-daily-rotate-file": "1.4.6",
-    "winston-loggly-bulk": "1.4.2"
+    "winston-loggly-bulk": "2.0.0"
   },
   "devDependencies": {
-    "chai": "4.0.0",
-    "eslint": "3.19.0",
+    "chai": "4.0.2",
+    "eslint": "4.1.1",
     "istanbul": "0.4.5",
     "mocha": "3.4.2",
     "nodemon": "1.11.0",
