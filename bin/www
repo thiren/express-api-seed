@@ -8,27 +8,21 @@ const logger = require('../utils/logging/logger');
 
 const app = require('../app');
 const http = require('http');
+const async = require('async');
+const config = require('config');
 
 /**
- * Get port from environment and store in Express.
+ * Server startup procedure.
  */
 
-const port = normalizePort(process.env.PORT || '8000');
-app.set('port', port);
-
-/**
- * Create HTTP server.
- */
-
-const server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+async.series([
+    initialiseExpressServer
+], function (err) {
+    if (err) {
+        logger.error(err);
+        return process.exit(1);
+    }
+});
 
 /**
  * Listen for process warnings, exceptions and exit events.
@@ -66,64 +60,89 @@ process.on('exit', function (code) {
     logger.warn('Process is exiting with code: ' + code);
 });
 
-/**
- * Normalize a port into a number, string, or false.
- */
+function initialiseExpressServer(callback) {
+    /**
+     * Get port from environment and store in Express.
+     */
 
-function normalizePort(val) {
-    const port = parseInt(val, 10);
+    const port = normalizePort(config.get('server.port'));
+    app.set('port', port);
 
-    if (isNaN(port)) {
-        // named pipe
-        return val;
+    /**
+     * Create HTTP server.
+     */
+
+    const server = http.createServer(app);
+
+    /**
+     * Listen on provided port, on all network interfaces.
+     */
+
+    server.listen(port);
+    server.on('error', onError);
+    server.on('listening', onListening);
+
+    callback();
+
+    /**
+     * Normalize a port into a number, string, or false.
+     */
+
+    function normalizePort(val) {
+        const port = parseInt(val, 10);
+
+        if (isNaN(port)) {
+            // named pipe
+            return val;
+        }
+
+        if (port >= 0) {
+            // port number
+            return port;
+        }
+
+        return false;
     }
 
-    if (port >= 0) {
-        // port number
-        return port;
-    }
+    /**
+     * Event listener for HTTP server "error" event.
+     */
 
-    return false;
-}
-
-/**
- * Event listener for HTTP server "error" event.
- */
-
-function onError(error) {
-    if (error.syscall !== 'listen') {
-        throw error;
-    }
-
-    const bind = typeof port === 'string'
-        ? 'Pipe ' + port
-        : 'Port ' + port;
-
-    // handle specific listen errors with friendly messages
-    switch (error.code) {
-        case 'EACCES':
-            logger.error(bind + ' requires elevated privileges');
-            process.exit(1);
-            break;
-        case 'EADDRINUSE':
-            logger.error(bind + ' is already in use');
-            process.exit(1);
-            break;
-        default:
+    function onError(error) {
+        if (error.syscall !== 'listen') {
             throw error;
+        }
+
+        const bind = typeof port === 'string'
+            ? 'Pipe ' + port
+            : 'Port ' + port;
+
+        // handle specific listen errors with friendly messages
+        switch (error.code) {
+            case 'EACCES':
+                logger.error(bind + ' requires elevated privileges');
+                process.exit(1);
+                break;
+            case 'EADDRINUSE':
+                logger.error(bind + ' is already in use');
+                process.exit(1);
+                break;
+            default:
+                throw error;
+        }
     }
-}
 
-/**
- * Event listener for HTTP server "listening" event.
- */
+    /**
+     * Event listener for HTTP server "listening" event.
+     */
 
-function onListening() {
-    require('../utils/scheduling/scheduler');
+    function onListening() {
+        require('../utils/scheduling/scheduler');
 
-    const addr = server.address();
-    const bind = typeof addr === 'string'
-        ? 'pipe ' + addr
-        : 'port ' + addr.port;
-    logger.info('Listening on ' + bind);
+        const addr = server.address();
+        const bind = typeof addr === 'string'
+            ? 'pipe ' + addr
+            : 'port ' + addr.port;
+        logger.info('Listening on ' + bind);
+    }
 }

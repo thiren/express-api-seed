@@ -1,13 +1,12 @@
 {
+  "server": {
+    "port": "8000"
+  },
   "logging": {
     "level": "info",
     "loggly": {
       "inputToken": "",
       "subdomain": "",
-      "auth": {
-        "username": "",
-        "password": ""
-      },
       "tags": [
         "node-api-seed"
       ]
