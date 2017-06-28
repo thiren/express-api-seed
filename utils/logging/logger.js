@@ -15,12 +15,12 @@ const winstonOptions = {
     exitOnError: false
 };
 
-if (environment === 'production' || environment === 'qa') {
+if (environment === 'test') {
+    // don't log anything when running tests
+} else if (environment === 'production' || environment === 'qa') {
     winstonOptions.transports.push(getConsoleTransport('info'));
     winstonOptions.transports.push(getFileTransport('info'));
     winstonOptions.transports.push(getLogglyTransport('warn'));
-} else if (environment === 'test') {
-    // don't log anything when running tests
 } else {
     winstonOptions.transports.push(getConsoleTransport('info'));
     winstonOptions.transports.push(getFileTransport('info'));
@@ -77,7 +77,7 @@ function getLogglyTransport(level) {
         level = defaultLoggingLevel;
     }
 
-    let logglyConfig = _.cloneDeep(config.get('logging').loggly);
+    let logglyConfig = _.cloneDeep(config.get('logging.loggly'));
 
     let options = _.merge({}, {
         level: level,

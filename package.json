@@ -19,11 +19,7 @@
   "keywords": [
     "node",
     "express",
-    "mocha",
-    "chai",
-    "api",
-    "rest",
-    "restful"
+    "api"
   ],
   "author": "Thiren Bunsee",
   "license": "MIT",
@@ -33,7 +29,7 @@
   },
   "homepage": "https://github.com/thiren/node-api-seed#readme",
   "engines": {
-    "node": "~6.9"
+    "node": "~6.11"
   },
   "dependencies": {
     "app-root-path": "2.0.1",
