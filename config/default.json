@@ -13,5 +13,8 @@
         "node-api-seed"
       ]
     }
+  },
+  "mongo": {
+    "database": "node-api-seed"
   }
 }
