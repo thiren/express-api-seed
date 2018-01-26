@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 
+'use strict';
+
 /**
  * Module dependencies.
  */
 
-const logger = require('../utils/logging/logger');
+require('../utils/logging/logger');
 
 const app = require('../app');
 const http = require('http');
@@ -16,49 +18,55 @@ const config = require('config');
  */
 
 async.series([
-    initialiseExpressServer
+    initialiseProcessEventListeners,
+    initialiseExpressServer,
+    initialiseScheduler,
 ], function (err) {
     if (err) {
-        logger.error(err);
+        console.error(err);
         return process.exit(1);
     }
 });
 
-/**
- * Listen for process warnings, exceptions and exit events.
- */
+function initialiseProcessEventListeners(callback) {
+    /**
+     * Listen for process warnings, exceptions and exit events.
+     */
 
-process.on('warning', function (warning) {
-    logger.warn({message: 'Warning', warning: warning});
-});
+    process.on('warning', function (warning) {
+        console.warn({message: 'Warning', warning: warning});
+    });
 
-process.on('uncaughtException', function (err) {
-    logger.error({message: 'Unhandled exception', error: err});
+    process.on('uncaughtException', function (err) {
+        console.error({message: 'Unhandled exception', error: err});
 
-    setTimeout(function () {
-        process.exit(1);
-    }, 2000);
-});
+        setTimeout(function () {
+            process.exit(1);
+        }, 5000);
+    });
 
-process.on('unhandledRejection', function (reason, p) {
-    logger.error('Unhandled Rejection at: Promise', p, 'reason:', reason);
+    process.on('unhandledRejection', function (reason, p) {
+        console.error('Unhandled Rejection at: Promise', p, 'reason:', reason);
 
-    setTimeout(function () {
-        process.exit(1);
-    }, 2000);
-});
+        setTimeout(function () {
+            process.exit(1);
+        }, 5000);
+    });
 
-process.on('SIGINT', function () {
-    logger.warn('Received SIGINT. Process is busy exiting');
+    process.on('SIGINT', function () {
+        console.warn('Received SIGINT. Process is busy exiting');
 
-    setTimeout(function () {
-        process.exit(1);
-    }, 2000);
-});
+        setTimeout(function () {
+            process.exit(1);
+        }, 5000);
+    });
 
-process.on('exit', function (code) {
-    logger.warn('Process is exiting with code: ' + code);
-});
+    process.on('exit', function (code) {
+        console.warn('Process is exiting with code: ' + code);
+    });
+
+    callback();
+}
 
 function initialiseExpressServer(callback) {
     /**
@@ -120,11 +128,11 @@ function initialiseExpressServer(callback) {
         // handle specific listen errors with friendly messages
         switch (error.code) {
             case 'EACCES':
-                logger.error(bind + ' requires elevated privileges');
+                console.error(bind + ' requires elevated privileges');
                 process.exit(1);
                 break;
             case 'EADDRINUSE':
-                logger.error(bind + ' is already in use');
+                console.error(bind + ' is already in use');
                 process.exit(1);
                 break;
             default:
@@ -137,12 +145,16 @@ function initialiseExpressServer(callback) {
      */
 
     function onListening() {
-        require('../utils/scheduling/scheduler');
-
         const addr = server.address();
         const bind = typeof addr === 'string'
             ? 'pipe ' + addr
             : 'port ' + addr.port;
-        logger.info('Listening on ' + bind);
+        console.info('Listening on ' + bind);
     }
+}
+
+function initialiseScheduler(callback) {
+    require('../utils/scheduling/scheduler');
+
+    callback();
 }

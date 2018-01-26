@@ -7,10 +7,10 @@
     "start": "node ./bin/www",
     "watch": "nodemon ./bin/www",
     "lint": "eslint ./",
-    "test": "set NODE_ENV=test&& mocha",
-    "coverage": "set NODE_ENV=test&& istanbul cover node_modules/mocha/bin/_mocha -- -R spec",
-    "test-linux": "NODE_ENV=test mocha",
-    "coverage-linux": "NODE_ENV=test istanbul cover node_modules/mocha/bin/_mocha -- -R spec"
+    "test": "NODE_ENV=test mocha",
+    "coverage": "NODE_ENV=test nyc node_modules/mocha/bin/_mocha",
+    "test-windows": "set NODE_ENV=test&& mocha",
+    "coverage-windows": "set NODE_ENV=test&& nyc mocha"
   },
   "repository": {
     "type": "git",
@@ -29,31 +29,33 @@
   },
   "homepage": "https://github.com/thiren/node-api-seed#readme",
   "engines": {
-    "node": "~6.11"
+    "node": "6"
   },
   "dependencies": {
     "app-root-path": "2.0.1",
-    "async": "2.5.0",
-    "body-parser": "1.17.2",
-    "boom": "5.1.0",
-    "config": "1.26.1",
-    "cors": "2.8.3",
-    "cron": "1.2.1",
-    "express": "4.15.3",
+    "async": "2.6.0",
+    "body-parser": "1.18.2",
+    "boom": "7.1.1",
+    "config": "1.29.2",
+    "cors": "2.8.4",
+    "cron": "1.3.0",
+    "express": "4.16.2",
+    "helmet": "3.10.0",
     "lodash": "4.17.4",
-    "moment": "2.18.1",
-    "morgan": "1.8.2",
-    "uuid": "3.1.0",
-    "winston": "2.3.1",
-    "winston-daily-rotate-file": "1.4.6",
-    "winston-loggly-bulk": "2.0.0"
+    "moment": "2.20.1",
+    "morgan": "1.9.0",
+    "uuid": "3.2.1",
+    "winston": "2.4.0",
+    "winston-daily-rotate-file": "1.7.2",
+    "winston-loggly": "1.3.1"
   },
   "devDependencies": {
-    "chai": "4.0.2",
-    "eslint": "4.1.1",
-    "istanbul": "0.4.5",
-    "mocha": "3.4.2",
-    "nodemon": "1.11.0",
-    "supertest": "3.0.0"
+    "chai": "^4.1.0",
+    "eslint": "^4.16.0",
+    "eslint-config-google": "^0.9.1",
+    "mocha": "^5.0.0",
+    "nodemon": "^1.14.11",
+    "nyc": "^11.4.1",
+    "supertest": "^3.0.0"
   }
 }

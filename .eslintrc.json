@@ -7,10 +7,45 @@
   },
   "env": {
     "node": true,
-    "es6": true
+    "es6": true,
+    "mongo": true,
+    "mocha": true
   },
+  "globals": {},
   "rules": {
-    "no-console": "warn",
-    "no-unused-vars": ["warn", { "vars": "all", "args": "none" }]
+    "valid-jsdoc": [
+      2,
+      {
+        "requireParamDescription": false,
+        "requireReturnDescription": false,
+        "requireReturn": false,
+        "prefer": {
+          "returns": "return"
+        }
+      }
+    ],
+    "no-console": 0,
+    "no-unused-vars": [
+      1,
+      {
+        "vars": "all",
+        "args": "none"
+      }
+    ],
+
+    // Stylistic Issues
+    // http://eslint.org/docs/rules/#stylistic-issues
+    // ----------------------------------------------
+    "eol-last": 2,
+    "require-jsdoc": [
+      2,
+      {
+        "require": {
+          "FunctionDeclaration": true,
+          "MethodDefinition": true,
+          "ClassDeclaration": true
+        }
+      }
+    ]
   }
 }

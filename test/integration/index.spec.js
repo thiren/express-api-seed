@@ -1,3 +1,5 @@
+'use strict';
+
 const expect = require('chai').expect;
 const request = require('supertest');
 const app = require('../../app');
@@ -14,8 +16,8 @@ describe('Base route', function () {
                     return done(err);
                 }
 
-                expect(res.body).to.have.property('api');
-                expect(res.body.api).to.not.equal(null);
+                expect(res.body).to.have.property('name');
+                expect(res.body.name).to.not.equal(null);
                 expect(res.body).to.have.property('version');
                 expect(res.body.version).to.not.equal(null);
                 done();

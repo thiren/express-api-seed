@@ -1,15 +1,10 @@
+'use strict';
+
 const express = require('express');
 const router = express.Router();
 
-const packageJson = require('../package.json');
+const monitorService = require('../services/monitor-service');
 
 module.exports = router;
 
-router.get('/', serverPulse);
-
-function serverPulse(req, res, next) {
-    res.status(200).json({
-        api: packageJson.name,
-        version: packageJson.version
-    });
-}
+router.get('/', monitorService.pulse);

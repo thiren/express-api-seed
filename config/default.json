@@ -1,10 +1,12 @@
 {
   "server": {
+    "environment": "development",
     "port": "8000"
   },
   "logging": {
     "level": "info",
     "loggly": {
+      "enabled": false,
       "inputToken": "",
       "subdomain": "",
       "tags": [

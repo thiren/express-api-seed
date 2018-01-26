@@ -1,5 +1,7 @@
+'use strict';
+
 const moment = require('moment');
-const uuid = require('uuid');
+const uuidv4 = require('uuid/v4');
 const Boom = require('boom');
 const _ = require('lodash');
 
@@ -18,8 +20,8 @@ function parse(req, err) {
 
     if (err instanceof Error) {
         if (!err.isBoom) {
-            if (_.has(err, 'statusCode') || _.has(err, 'status')) {
-                statusCode = err.statusCode || err.status;
+            if (_.has(err, 'statusCode') || _.has(err, 'status') || _.has(err, 'status_code')) {
+                statusCode = err.statusCode || err.status || err.status_code;
             }
             if (_.has(err, 'message') && typeof err.message === 'string') {
                 message = err.message;
@@ -28,7 +30,7 @@ function parse(req, err) {
             if (statusCode === 401) {
                 error = Boom.unauthorized(message);
             } else {
-                error = Boom.wrap(err, statusCode, message);
+                error = Boom.boomify(err, {statusCode: statusCode, message: message});
             }
             error.stack = err.stack;
         } else {
@@ -43,8 +45,8 @@ function parse(req, err) {
             };
         }
     } else {
-        if (typeof err === 'object' && (_.has(err, 'statusCode') || _.has(err, 'status')) && _.has(err, 'message')) {
-            statusCode = err.statusCode || err.status;
+        if (typeof err === 'object' && (_.has(err, 'statusCode') || _.has(err, 'status') || _.has(err, 'status_code')) && _.has(err, 'message')) {
+            statusCode = err.statusCode || err.status || err.status_code;
             message = err.message;
             if (_.has(err, 'data')) {
                 if (typeof err.data === 'object') {
@@ -59,7 +61,7 @@ function parse(req, err) {
             data = err;
         }
 
-        error = Boom.create(statusCode, message, data);
+        error = new Boom(statusCode, {message: message, data: data});
 
         if (typeof err === 'object' && _.has(err, 'stack')) {
             error.stack = err.stack;
@@ -78,10 +80,11 @@ function parse(req, err) {
         data: data,
         stack: null,
         request: {
-            reference: req.reference || uuid.v4(),
+            reference: req.reference || uuidv4(),
             method: req.method,
             url: req.originalUrl,
             query: req.query,
+            headers: _.omit(req.headers, ['authorization']),
             body: req.body
         }
     };

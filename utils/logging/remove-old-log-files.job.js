@@ -1,3 +1,5 @@
+'use strict';
+
 const fs = require('fs');
 const path = require('path');
 const async = require('async');
@@ -12,7 +14,8 @@ module.exports = scheduledJob;
 
 function scheduledJob() {
     logger.info('Starting log file remover job');
-    let startTheJobAutomatically = true; //if false, remember to call job.start(), assuming job is the variable you set the cron job to.
+    let startTheJobAutomatically = true;
+    // if false, remember to call job.start(), assuming job is the variable you set the cron job to.
     new CronJob(cronTimers.everyHour, onTick, onComplete, startTheJobAutomatically, 'Africa/Johannesburg');
 }
 

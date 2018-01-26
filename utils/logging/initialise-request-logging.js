@@ -1,10 +1,16 @@
-const _ = require('lodash');
-const uuid = require('uuid');
+'use strict';
+
+const uuidv4 = require('uuid/v4');
+const config = require('config');
 const morgan = require('morgan');
 
-const logger = require('./logger');
-
 module.exports = initialiseMorgan;
+
+const stream = {
+    write: function (message, encoding) {
+        console.log(message);
+    }
+};
 
 morgan.token('reference', function (req) {
     if (!req.reference) {
@@ -16,34 +22,29 @@ morgan.token('reference', function (req) {
 
 function initialiseMorgan(app) {
     app.use(function (req, res, next) {
-        req.reference = uuid.v4();
+        req.reference = uuidv4();
         next();
     });
-    if (app.get('env') === 'test') {
+
+    const environment = config.get('server.environment');
+
+    if (environment === 'test') {
         // Don't log requests when running tests
-    } else if (app.get('env') === 'development') {
+    } else if (environment === 'development') {
         app.use(morgan(':method :url', {
-            stream: logger.stream,
-            immediate: true,
-            skip: skip
+            stream: stream,
+            immediate: true
         }));
         app.use(morgan('dev', {
-            stream: logger.stream,
-            skip: skip
+            stream: stream
         }));
     } else {
         app.use(morgan(':reference :remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" ":referrer" ":user-agent"', {
-            stream: logger.stream,
-            immediate: true,
-            skip: skip
+            stream: stream,
+            immediate: true
         }));
         app.use(morgan(':reference :remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', {
-            stream: logger.stream,
-            skip: skip
+            stream: stream
         }));
     }
-}
-
-function skip(req, res) {
-    return _.includes(['/favicon.ico'], req.originalUrl);
 }
