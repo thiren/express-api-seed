@@ -13,7 +13,7 @@ const http = require('http');
 const async = require('async');
 const config = require('config');
 
-const mongoService = require('../services/mongo-service');
+const mongodbService = require('../services/mongodb-service');
 
 /**
  * Server startup procedure.
@@ -21,7 +21,7 @@ const mongoService = require('../services/mongo-service');
 
 async.series([
     initialiseProcessEventListeners,
-    mongoService.init,
+    mongodbService.init,
     initialiseExpressServer,
     initialiseScheduler,
 ], function (err) {
@@ -43,7 +43,7 @@ function initialiseProcessEventListeners(callback) {
     process.on('uncaughtException', function (err) {
         console.error({message: 'Unhandled exception', error: err});
 
-        mongoService.close();
+        mongodbService.close();
         setTimeout(function () {
             process.exit(1);
         }, 5000);
@@ -52,7 +52,7 @@ function initialiseProcessEventListeners(callback) {
     process.on('unhandledRejection', function (reason, p) {
         console.error('Unhandled Rejection at: Promise', p, 'reason:', reason);
 
-        mongoService.close();
+        mongodbService.close();
         setTimeout(function () {
             process.exit(1);
         }, 5000);
@@ -61,7 +61,7 @@ function initialiseProcessEventListeners(callback) {
     process.on('SIGINT', function () {
         console.warn('Received SIGINT. Process is busy exiting');
 
-        mongoService.close();
+        mongodbService.close();
         setTimeout(function () {
             process.exit(1);
         }, 5000);

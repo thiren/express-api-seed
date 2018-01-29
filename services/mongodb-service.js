@@ -5,6 +5,11 @@ const mongodb = require('mongodb');
 const MongoClient = mongodb.MongoClient;
 const Logger = mongodb.Logger;
 
+// NOTE: the default mongo log level is error
+Logger.setCurrentLogger(function (msg, context) {
+    console.error({message: msg, context: context});
+});
+
 const database = {
     init: init,
     close: close,
