@@ -1,3 +1,5 @@
+'use strict';
+
 const Boom = require('boom');
 
 const errorHandler = require('./error-handler');
@@ -10,8 +12,8 @@ function initialiseErrorHandling(app) {
         req.error = {
             includeStackTrace: false
         };
-        let data = {};
-        next(Boom.create(404, 'Route not found', data));
+
+        next(new Boom('Route not found', {statusCode: 404}));
     });
 
     // error handlers

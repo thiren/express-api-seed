@@ -1,42 +1,57 @@
+'use strict';
+
 const _ = require('lodash');
+const util = require('util');
 const path = require('path');
 const config = require('config');
 const winston = require('winston');
 const appRoot = require('app-root-path');
 require('winston-daily-rotate-file');
-require('winston-loggly-bulk');
+require('winston-loggly');
 
-const environment = process.env.NODE_ENV || 'development';
+const environment = config.get('server.environment');
 
-const defaultLoggingLevel = config.get('logging').level;
+const defaultLoggingLevel = config.get('logging.level');
 
-const winstonOptions = {
-    transports: [],
+const logger = new winston.Logger({
     exitOnError: false
-};
+});
 
 if (environment === 'test') {
-    // don't log anything when running tests
-} else if (environment === 'production' || environment === 'qa') {
-    winstonOptions.transports.push(getConsoleTransport('info'));
-    winstonOptions.transports.push(getFileTransport('info'));
-    winstonOptions.transports.push(getLogglyTransport('warn'));
+    // NOTE: don't log anything when running tests
+    setupConsoleTransport(logger, {silent: true}, 'info');
+} else if (environment === 'development') {
+    setupConsoleTransport(logger, {silent: false}, 'info');
+    setupFileTransport(logger, 'info');
 } else {
-    winstonOptions.transports.push(getConsoleTransport('info'));
-    winstonOptions.transports.push(getFileTransport('info'));
+    setupConsoleTransport(logger, {silent: false}, 'info');
+    setupFileTransport(logger, 'info');
+    //setupLogglyTransport(logger, 'warn');
 }
-
-const logger = new winston.Logger(winstonOptions);
-
-logger.stream = {
-    write: function (message, encoding) {
-        logger.info(message);
-    }
-};
 
 module.exports = logger;
 
-function getConsoleTransport(level) {
+console.log = function () {
+    logger.info.apply(logger, formatArgs(arguments));
+};
+console.info = function () {
+    logger.info.apply(logger, formatArgs(arguments));
+};
+console.warn = function () {
+    logger.warn.apply(logger, formatArgs(arguments));
+};
+console.error = function () {
+    logger.error.apply(logger, formatArgs(arguments));
+};
+console.debug = function () {
+    logger.debug.apply(logger, formatArgs(arguments));
+};
+
+function formatArgs(args) {
+    return [util.format.apply(util.format, Array.prototype.slice.call(args))];
+}
+
+function setupConsoleTransport(logger, opt, level) {
     if (!level) {
         level = defaultLoggingLevel;
     }
@@ -50,10 +65,10 @@ function getConsoleTransport(level) {
         timestamp: false
     };
 
-    return new winston.transports.Console(options);
+    logger.add(winston.transports.Console, _.merge(options, opt || {}));
 }
 
-function getFileTransport(level) {
+function setupFileTransport(logger, level) {
     if (!level) {
         level = defaultLoggingLevel;
     }
@@ -64,15 +79,14 @@ function getFileTransport(level) {
         filename: path.join(appRoot.resolve('logs'), 'logs'),
         datePattern: '-yyyy-MM-ddTHH.log',
         handleExceptions: true,
-        json: true,
         colorize: false,
         timestamp: true
     };
 
-    return new winston.transports.DailyRotateFile(options);
+    logger.add(winston.transports.DailyRotateFile, options);
 }
 
-function getLogglyTransport(level) {
+function setupLogglyTransport(logger, level) {
     if (!level) {
         level = defaultLoggingLevel;
     }
@@ -81,11 +95,8 @@ function getLogglyTransport(level) {
 
     let options = _.merge({}, {
         level: level,
-        isBulk: true,
         json: true,
-        stripColors: true,
-        bufferOptions: {size: 1000, retriesInMilliSeconds: 60 * 1000}
     }, logglyConfig);
 
-    return new winston.transports.Loggly(options);
+    logger.add(winston.transports.Loggly, options);
 }

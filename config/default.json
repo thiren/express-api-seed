@@ -1,15 +1,20 @@
 {
   "server": {
+    "environment": "development",
     "port": "8000"
   },
   "logging": {
     "level": "info",
     "loggly": {
+      "enabled": false,
       "inputToken": "",
       "subdomain": "",
       "tags": [
         "node-api-seed"
       ]
     }
+  },
+  "mongo": {
+    "database": "node-api-seed"
   }
 }
