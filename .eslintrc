@@ -1,0 +1,18 @@
+{
+  "extends": ["eslint:recommended", "google"],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "script",
+    "ecmaFeatures": {}
+  },
+  "env": {
+    "node": true,
+    "es6": true,
+    "mongo": true,
+    "mocha": true
+  },
+  "globals": {},
+  "rules": {
+    // Additional, per-project rules...
+  }
+}

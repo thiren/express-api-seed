@@ -10,11 +10,14 @@
       "inputToken": "",
       "subdomain": "",
       "tags": [
-        "node-api-seed"
+        "express-api-seed"
       ]
     }
   },
   "mongo": {
-    "database": "node-api-seed"
+    "url": "mongodb://localhost:27017/express-api-seed",
+    "options": {
+      "useNewUrlParser": true
+    }
   }
 }

@@ -5,8 +5,8 @@ const cors = require('cors');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 
-const initialiseRequestLogging = require('./utils/logging/initialise-request-logging');
-const initialiseErrorHandling = require('./utils/error-handling/initialise-error-handling');
+const initialiseRequestLogging = require('./utilities/logging/initialise-request-logging');
+const initialiseErrorHandling = require('./utilities/error-handling/initialise-error-handling');
 
 const routes = require('./routes/index');
 

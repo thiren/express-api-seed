@@ -6,14 +6,14 @@
  * Module dependencies.
  */
 
-require('../utils/logging/logger');
+require('../utilities/logging/logger');
 
 const app = require('../app');
 const http = require('http');
 const async = require('async');
 const config = require('config');
 
-const mongodbService = require('../services/mongodb-service');
+const {initMongoConnection, closeMongoConnection} = require('../utilities/mongodb-service');
 
 /**
  * Server startup procedure.
@@ -21,9 +21,8 @@ const mongodbService = require('../services/mongodb-service');
 
 async.series([
     initialiseProcessEventListeners,
-    mongodbService.init,
-    initialiseExpressServer,
-    initialiseScheduler,
+    initMongoConnection,
+    initialiseExpressServer
 ], function (err) {
     if (err) {
         console.error(err);
@@ -43,28 +42,22 @@ function initialiseProcessEventListeners(callback) {
     process.on('uncaughtException', function (err) {
         console.error({message: 'Unhandled exception', error: err});
 
-        mongodbService.close();
-        setTimeout(function () {
-            process.exit(1);
-        }, 5000);
+        closeMongoConnection();
+        process.exit(1);
     });
 
     process.on('unhandledRejection', function (reason, p) {
         console.error('Unhandled Rejection at: Promise', p, 'reason:', reason);
 
-        mongodbService.close();
-        setTimeout(function () {
-            process.exit(1);
-        }, 5000);
+        closeMongoConnection();
+        process.exit(1);
     });
 
     process.on('SIGINT', function () {
         console.warn('Received SIGINT. Process is busy exiting');
 
-        mongodbService.close();
-        setTimeout(function () {
-            process.exit(1);
-        }, 5000);
+        closeMongoConnection();
+        process.exit(0);
     });
 
     process.on('exit', function (code) {
@@ -157,10 +150,4 @@ function initialiseExpressServer(callback) {
             : 'port ' + addr.port;
         console.info('Listening on ' + bind);
     }
-}
-
-function initialiseScheduler(callback) {
-    require('../utils/scheduling/scheduler');
-
-    callback();
 }

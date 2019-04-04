@@ -1,7 +1,7 @@
 {
-  "name": "node-api-seed",
+  "name": "express-api-seed",
   "version": "0.0.0",
-  "description": "A project seed for new node APIs",
+  "description": "A project seed for new node APIs built using Express",
   "main": "./bin/www",
   "scripts": {
     "start": "node ./bin/www",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thiren/node-api-seed.git"
+    "url": "git+https://github.com/thiren/express-api-seed.git"
   },
   "keywords": [
     "node",
@@ -25,38 +25,36 @@
   "license": "MIT",
   "private": true,
   "bugs": {
-    "url": "https://github.com/thiren/node-api-seed/issues"
+    "url": "https://github.com/thiren/express-api-seed/issues"
   },
-  "homepage": "https://github.com/thiren/node-api-seed#readme",
+  "homepage": "https://github.com/thiren/express-api-seed#readme",
   "engines": {
     "node": "6"
   },
   "dependencies": {
-    "app-root-path": "2.0.1",
-    "async": "2.6.0",
-    "body-parser": "1.18.2",
-    "boom": "7.1.1",
-    "config": "1.29.2",
-    "cors": "2.8.4",
-    "cron": "1.3.0",
-    "express": "4.16.2",
-    "helmet": "3.10.0",
-    "lodash": "4.17.4",
-    "moment": "2.20.1",
-    "mongodb": "3.0.1",
-    "morgan": "1.9.0",
-    "uuid": "3.2.1",
-    "winston": "2.4.0",
-    "winston-daily-rotate-file": "1.7.2",
-    "winston-loggly": "1.3.1"
+    "async": "2.6.2",
+    "body-parser": "1.18.3",
+    "boom": "7.3.0",
+    "config": "3.0.1",
+    "cors": "2.8.5",
+    "express": "4.16.4",
+    "helmet": "3.16.0",
+    "lodash": "4.17.11",
+    "moment": "2.24.0",
+    "mongodb": "3.2.2",
+    "morgan": "1.9.1",
+    "uuid": "3.3.2",
+    "winston": "3.2.1",
+    "winston-daily-rotate-file": "3.8.0",
+    "winston-loggly-bulk": "3.0.1"
   },
   "devDependencies": {
     "chai": "^4.1.0",
-    "eslint": "^4.16.0",
-    "eslint-config-google": "^0.9.1",
-    "mocha": "^5.0.0",
-    "nodemon": "^1.14.11",
-    "nyc": "^11.4.1",
-    "supertest": "^3.0.0"
+    "eslint": "^5.16.0",
+    "eslint-config-google": "^0.12.0",
+    "mocha": "6.0.2",
+    "nodemon": "^1.18.10",
+    "nyc": "^13.3.0",
+    "supertest": "^4.0.2"
   }
 }

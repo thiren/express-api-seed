@@ -2,19 +2,19 @@
 
 const _ = require('lodash');
 const util = require('util');
-const path = require('path');
 const config = require('config');
 const winston = require('winston');
-const appRoot = require('app-root-path');
-require('winston-daily-rotate-file');
-require('winston-loggly');
+const {LogglyBulk} = require('winston-loggly-bulk');
 
-const environment = config.get('server.environment');
+const environment = config.get('server.environment') || 'production';
 
 const defaultLoggingLevel = config.get('logging.level');
 
-const logger = new winston.Logger({
-    exitOnError: false
+const logger = winston.createLogger({
+    level: 'info',
+    format: winston.format.json(),
+    exitOnError: false,
+    transports: []
 });
 
 if (environment === 'test') {
@@ -22,11 +22,9 @@ if (environment === 'test') {
     setupConsoleTransport(logger, {silent: true}, 'info');
 } else if (environment === 'development') {
     setupConsoleTransport(logger, {silent: false}, 'info');
-    setupFileTransport(logger, 'info');
 } else {
     setupConsoleTransport(logger, {silent: false}, 'info');
-    setupFileTransport(logger, 'info');
-    //setupLogglyTransport(logger, 'warn');
+    // setupLogglyTransport(logger, 'info');
 }
 
 module.exports = logger;
@@ -62,28 +60,11 @@ function setupConsoleTransport(logger, opt, level) {
         handleExceptions: true,
         json: false,
         colorize: true,
-        timestamp: false
+        timestamp: false,
+        format: winston.format.simple()
     };
 
-    logger.add(winston.transports.Console, _.merge(options, opt || {}));
-}
-
-function setupFileTransport(logger, level) {
-    if (!level) {
-        level = defaultLoggingLevel;
-    }
-
-    let options = {
-        name: 'file',
-        level: level,
-        filename: path.join(appRoot.resolve('logs'), 'logs'),
-        datePattern: '-yyyy-MM-ddTHH.log',
-        handleExceptions: true,
-        colorize: false,
-        timestamp: true
-    };
-
-    logger.add(winston.transports.DailyRotateFile, options);
+    logger.add(new winston.transports.Console(_.merge(options, opt || {})));
 }
 
 function setupLogglyTransport(logger, level) {
@@ -98,5 +79,5 @@ function setupLogglyTransport(logger, level) {
         json: true,
     }, logglyConfig);
 
-    logger.add(winston.transports.Loggly, options);
+    logger.add(new LogglyBulk(options));
 }
