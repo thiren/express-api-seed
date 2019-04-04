@@ -1,0 +1,15 @@
+.idea
+.git
+.circleci
+node_modules
+test
+logs
+npm-debug.log
+.editorconfig
+.eslintignore
+.eslintrc
+.gitattributes
+.gitignore
+.npmrc
+.travis.yml
+start.bat
