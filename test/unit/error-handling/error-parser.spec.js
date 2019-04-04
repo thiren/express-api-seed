@@ -2,7 +2,7 @@
 
 const Boom = require('boom');
 const expect = require('chai').expect;
-const error = require('../../../utils/error-handling/error');
+const error = require('../../../utilities/error-handling/error');
 
 describe('Error Parser', function () {
     const req = {
