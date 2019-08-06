@@ -7,12 +7,12 @@ const morgan = require('morgan');
 module.exports = initialiseMorgan;
 
 const stream = {
-    write: function (message, encoding) {
+    write: (message, encoding) => {
         console.log(message);
     }
 };
 
-morgan.token('reference', function (req) {
+morgan.token('reference', (req) => {
     if (!req.reference) {
         return '';
     }
@@ -21,7 +21,7 @@ morgan.token('reference', function (req) {
 });
 
 function initialiseMorgan(app) {
-    app.use(function (req, res, next) {
+    app.use((req, res, next) => {
         req.reference = uuidv4();
         next();
     });
@@ -33,18 +33,22 @@ function initialiseMorgan(app) {
     } else if (environment === 'development') {
         app.use(morgan(':method :url', {
             stream: stream,
-            immediate: true
+            immediate: true,
+            skip: (req) => { return req.method === 'OPTIONS' }
         }));
         app.use(morgan('dev', {
-            stream: stream
+            stream: stream,
+            skip: (req) => { return req.method === 'OPTIONS' }
         }));
     } else {
-        app.use(morgan(':reference :remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" ":referrer" ":user-agent"', {
+        app.use(morgan(':reference :remote-addr - :remote-user ":method :url HTTP/:http-version" ":referrer" ":user-agent"', {
             stream: stream,
-            immediate: true
+            immediate: true,
+            skip: (req) => { return req.method === 'OPTIONS' }
         }));
-        app.use(morgan(':reference :remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', {
-            stream: stream
+        app.use(morgan(':reference :remote-addr - :remote-user ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', {
+            stream: stream,
+            skip: (req) => { return req.method === 'OPTIONS' }
         }));
     }
 }

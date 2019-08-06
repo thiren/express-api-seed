@@ -14,7 +14,7 @@
       ]
     }
   },
-  "mongo": {
+  "mongodb": {
     "url": "mongodb://localhost:27017/express-api-seed",
     "options": {
       "useNewUrlParser": true

@@ -1,5 +1,3 @@
-'use strict';
-
 const moment = require('moment');
 const uuidv4 = require('uuid/v4');
 const Boom = require('boom');
@@ -61,7 +59,7 @@ function parse(req, err) {
             data = err;
         }
 
-        error = new Boom(statusCode, {message: message, data: data});
+        error = new Boom(message, {statusCode: statusCode, data: data});
 
         if (typeof err === 'object' && _.has(err, 'stack')) {
             error.stack = err.stack;
@@ -83,7 +81,7 @@ function parse(req, err) {
             reference: req.reference || uuidv4(),
             method: req.method,
             url: req.originalUrl,
-            query: req.query,
+            query: _.omit(req.query, ['authorization']),
             headers: _.omit(req.headers, ['authorization']),
             body: req.body
         }

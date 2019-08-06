@@ -22,7 +22,7 @@ function development(err, req, res, next) {
 
     const status = parsedError.statusCode || 500;
 
-    res.status(status).json(parsedError);
+    return res.status(status).json(parsedError);
 }
 
 // production error handler
@@ -39,5 +39,5 @@ function production(err, req, res, next) {
     const status = parsedError.statusCode || 500;
     const response = _.omit(parsedError, ['data', 'stack', 'request']);
 
-    res.status(status).json(response);
+    return res.status(status).json(response);
 }

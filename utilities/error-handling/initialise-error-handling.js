@@ -1,19 +1,17 @@
 'use strict';
 
-const Boom = require('boom');
-
 const errorHandler = require('./error-handler');
 
 module.exports = initialiseErrorHandling;
 
 function initialiseErrorHandling(app) {
     // catch 404 and forward to error handler
-    app.use(function (req, res, next) {
+    app.use((req, res, next) => {
         req.error = {
             includeStackTrace: false
         };
 
-        next(new Boom('Route not found', {statusCode: 404}));
+        return next({message: 'Route Not Found', statusCode: 404});
     });
 
     // error handlers

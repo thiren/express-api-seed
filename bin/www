@@ -21,7 +21,7 @@ const {initMongoConnection, closeMongoConnection} = require('../utilities/mongod
 
 async.series([
     initialiseProcessEventListeners,
-    initMongoConnection,
+    initialiseMongodbConnection,
     initialiseExpressServer
 ], function (err) {
     if (err) {
@@ -65,6 +65,17 @@ function initialiseProcessEventListeners(callback) {
     });
 
     callback();
+}
+
+function initialiseMongodbConnection(callback) {
+    initMongoConnection(config.get('mongodb'), (err) => {
+        if (err) {
+            return callback(err);
+        }
+
+        console.log('mongodb connection established');
+        callback();
+    });
 }
 
 function initialiseExpressServer(callback) {

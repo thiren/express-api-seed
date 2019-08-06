@@ -2,5 +2,8 @@
   "server": {
     "environment": "NODE_ENV",
     "port": "PORT"
+  },
+  "mongodb": {
+    "url": "MONGODB_URL"
   }
 }

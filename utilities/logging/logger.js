@@ -4,7 +4,7 @@ const _ = require('lodash');
 const util = require('util');
 const config = require('config');
 const winston = require('winston');
-const {LogglyBulk} = require('winston-loggly-bulk');
+const {Loggly} = require('winston-loggly-bulk');
 
 const environment = config.get('server.environment') || 'production';
 
@@ -12,7 +12,10 @@ const defaultLoggingLevel = config.get('logging.level');
 
 const logger = winston.createLogger({
     level: 'info',
-    format: winston.format.json(),
+    format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.json()
+    ),
     exitOnError: false,
     transports: []
 });
@@ -55,13 +58,13 @@ function setupConsoleTransport(logger, opt, level) {
     }
 
     let options = {
-        name: 'console',
         level: level,
         handleExceptions: true,
-        json: false,
-        colorize: true,
-        timestamp: false,
-        format: winston.format.simple()
+        format: winston.format.combine(
+            winston.format.colorize(),
+            winston.format.timestamp(),
+            winston.format.simple()
+        )
     };
 
     logger.add(new winston.transports.Console(_.merge(options, opt || {})));
@@ -71,13 +74,17 @@ function setupLogglyTransport(logger, level) {
     if (!level) {
         level = defaultLoggingLevel;
     }
+    if (!config.get('logging.loggly.token')) {
+        return console.log('Loggly logging not enabled');
+    }
 
     let logglyConfig = _.cloneDeep(config.get('logging.loggly'));
 
     let options = _.merge({}, {
         level: level,
         json: true,
+        timestamp: true
     }, logglyConfig);
 
-    logger.add(new LogglyBulk(options));
+    logger.add(new Loggly(options));
 }

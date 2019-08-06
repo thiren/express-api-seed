@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express');
+const fs = require('fs');
 const cors = require('cors');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
@@ -16,7 +17,14 @@ initialiseRequestLogging(app);
 
 app.use(helmet());
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+    limit: '25mb'
+}));
+
+app.get('/robots.txt', (req, res) => {
+    res.header('Content-Type', 'text/plain');
+    res.send(fs.readFileSync(__dirname + '/public/robots.txt', 'utf8'));
+});
 
 // api routes
 app.use('/', routes);

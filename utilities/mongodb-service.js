@@ -1,6 +1,5 @@
 'use strict';
 
-const config = require('config');
 const {MongoClient, Logger} = require('mongodb');
 
 // NOTE: the default mongo log level is error
@@ -19,10 +18,18 @@ module.exports = {
     db
 };
 
-function initMongoConnection(callback) {
+function initMongoConnection(config, callback) {
+    if (!config) {
+        throw new Error('Invalid MongoDB Config');
+    } else if (!config.hasOwnProperty('url')) {
+        throw new Error('Invalid MongoDB Config - Missing Required Property: url');
+    } else if (!config.hasOwnProperty('options')) {
+        throw new Error('Invalid MongoDB Config - Missing Required Property: options');
+    }
+
     // NOTE: the connection string must be url encoded
-    let url = config.get('mongo.url');
-    let options = config.get('mongo.options');
+    let url = config.url;
+    let options = config.options;
 
     MongoClient.connect(url, options, (err, client) => {
         if (err) {
@@ -47,7 +54,7 @@ function closeMongoConnection() {
 
 function client() {
     if (!_client) {
-        throw new Error('Mongo Client Not Found');
+        throw new Error('MongoDB Client Not Found');
     }
 
     return _client;
@@ -55,7 +62,7 @@ function client() {
 
 function db() {
     if (!_db) {
-        throw new Error('Mongo DB not Found');
+        throw new Error('MongoDB Database Not Found');
     }
 
     return _db;
