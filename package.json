@@ -6,7 +6,6 @@
   "scripts": {
     "start": "node ./bin/www",
     "watch": "nodemon ./bin/www",
-    "lint": "eslint ./",
     "test": "NODE_ENV=test mocha",
     "coverage": "NODE_ENV=test nyc node_modules/mocha/bin/_mocha",
     "test-windows": "set NODE_ENV=test&& mocha",
@@ -33,24 +32,22 @@
     "node": "10"
   },
   "dependencies": {
+    "@hapi/boom": "7.4.3",
     "async": "3.1.0",
     "body-parser": "1.19.0",
-    "boom": "7.3.0",
     "config": "3.2.2",
     "cors": "2.8.5",
     "express": "4.17.1",
     "helmet": "3.20.0",
     "lodash": "4.17.15",
     "moment": "2.24.0",
-    "mongodb": "3.2.7",
+    "mongodb": "3.3.0",
     "morgan": "1.9.1",
     "uuid": "3.3.2",
     "winston": "3.2.1",
     "winston-loggly-bulk": "3.0.1"
   },
-  "optionalDependencies": {
-    "bson-ext": "2.0.2"
-  },
+  "optionalDependencies": {},
   "devDependencies": {
     "chai": "^4.1.0",
     "mocha": "^6.2.0",

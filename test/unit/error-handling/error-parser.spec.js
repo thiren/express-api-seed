@@ -1,6 +1,6 @@
 'use strict';
 
-const Boom = require('boom');
+const Boom = require('@hapi/boom');
 const expect = require('chai').expect;
 const error = require('../../../utilities/error-handling/error');
 
@@ -31,20 +31,18 @@ describe('Error Parser', function () {
         expect(parsedError).to.have.nested.property('request.query').that.is.an('object');
         expect(parsedError).to.have.nested.property('request.body').that.is.an('object');
 
-        done();
+        return done();
     });
 
     it('should parse a native nodejs error into an error object that has a status 500', function (done) {
         //const error = new Error('This is a test');
 
-        done();
+        return done();
     });
 
     it('should parse a boom error into an error object', function (done) {
         const boomError = Boom.boomify(new Error('Test error'), {statusCode: 500, message: 'Test error message'});
         const parsedError = error.parse(req, boomError);
-
-        console.log(parsedError);
 
         expect(parsedError).to.be.an('object');
         expect(parsedError).to.have.property('statusCode').that.is.a('number');
@@ -60,6 +58,6 @@ describe('Error Parser', function () {
         expect(parsedError).to.have.nested.property('request.query').that.is.an('object');
         expect(parsedError).to.have.nested.property('request.body').that.is.an('object');
 
-        done();
+        return done();
     });
 });

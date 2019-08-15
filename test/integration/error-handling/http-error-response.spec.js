@@ -22,7 +22,30 @@ describe('Invalid route', function () {
                 expect(res.body.error).to.equal('Not Found');
                 expect(res.body).to.have.property('message');
                 expect(res.body.message).to.equal('Route not found');
-                done();
+
+                return done();
             });
-    })
+    });
+
+    it('should return a 501 response', function (done) {
+        request(app)
+            .get('/v1')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(501)
+            .end(function (err, res) {
+                if (err) {
+                    return done(err);
+                }
+
+                expect(res.body).to.have.property('statusCode');
+                expect(res.body.statusCode).to.equal(501);
+                expect(res.body).to.have.property('error');
+                expect(res.body.error).to.equal('Not Implemented');
+                expect(res.body).to.have.property('message');
+                expect(res.body.message).to.equal('Route not implemented');
+
+                return done();
+            });
+    });
 });

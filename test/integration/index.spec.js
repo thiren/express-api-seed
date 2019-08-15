@@ -20,7 +20,8 @@ describe('Base route', function () {
                 expect(res.body.name).to.not.equal(null);
                 expect(res.body).to.have.property('version');
                 expect(res.body.version).to.not.equal(null);
-                done();
+
+                return done();
             });
     })
 });

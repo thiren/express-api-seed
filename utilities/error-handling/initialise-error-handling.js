@@ -11,7 +11,7 @@ function initialiseErrorHandling(app) {
             includeStackTrace: false
         };
 
-        return next({message: 'Route Not Found', statusCode: 404});
+        return next({message: 'Route not found', statusCode: 404});
     });
 
     // error handlers

@@ -1,6 +1,8 @@
+'use strict';
+
 const moment = require('moment');
 const uuidv4 = require('uuid/v4');
-const Boom = require('boom');
+const Boom = require('@hapi/boom');
 const _ = require('lodash');
 
 module.exports = {

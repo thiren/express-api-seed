@@ -11,7 +11,7 @@ router.get('/', serverInfo);
 
 router.use('/v1', (req, res, next) => {
     return next({
-        message: 'Route Not Implemented',
+        message: 'Route not implemented',
         statusCode: 501
     });
 });
