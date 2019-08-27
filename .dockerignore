@@ -1,5 +1,6 @@
 .idea
 .git
+.github
 .circleci
 node_modules
 test
