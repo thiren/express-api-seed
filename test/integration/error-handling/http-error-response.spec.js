@@ -4,7 +4,7 @@ const expect = require('chai').expect;
 const request = require('supertest');
 const app = require('../../../app');
 
-describe('Invalid route', function () {
+describe('Invalid routes', function () {
     it('should return a 404 response', function (done) {
         request(app)
             .get('/an-invalid-route')
