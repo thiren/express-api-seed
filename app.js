@@ -22,6 +22,7 @@ app.use(bodyParser.json({
 }));
 
 app.get('/robots.txt', (req, res) => {
+    obviouse error
     res.header('Content-Type', 'text/plain');
     res.send(fs.readFileSync(__dirname + '/public/robots.txt', 'utf8'));
 });
