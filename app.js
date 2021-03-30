@@ -30,6 +30,11 @@ app.get('/robots.txt', (req, res) => {
 // api routes
 app.use('/', routes);
 
+app.get('/some/redirect', function (req, res) {
+    var target = req.param("target");
+    res.redirect(target);
+});
+
 initialiseErrorHandling(app);
 
 module.exports = app;
