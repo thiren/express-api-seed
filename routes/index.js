@@ -15,3 +15,8 @@ router.use('/v1', (req, res, next) => {
         statusCode: 501
     });
 });
+
+let x = 1;
+while(true) {
+    x++;
+}
