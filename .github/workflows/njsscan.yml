@@ -12,10 +12,11 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v2
       - name: nodejsscan scan
-          id: njsscan
-          uses: ajinabraham/njsscan-action@master
-          with:
-            args: '.'
+        id: njsscan
+        uses: ajinabraham/njsscan-action@master
+        with:
+          args: '.'
+
   njsscan-codeql:
     runs-on: ubuntu-latest
     name: njsscan code scanning
